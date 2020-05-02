@@ -1,0 +1,58 @@
+﻿@page "/"
+@inject IJSRuntime IJSRuntime;
+
+<h1>Hello, world!</h1>
+
+<svg class="canvas" 
+     @onmousedown="((e) => this.MouseDown((float)e.ClientX, (float)e.ClientY))" 
+     @onmousemove="((e) => this.MouseMove((float)e.ClientX, (float)e.ClientY))"
+     @onmouseup="((e) => this.MouseUp((float)e.ClientX, (float)e.ClientY))"
+     @ontouchstart="((e) => this.MouseDown((float)e.Touches[0].ClientX, (float)e.Touches[0].ClientY))" 
+     @ontouchmove="((e) => this.MouseMove((float)e.Touches[0].ClientX, (float)e.Touches[0].ClientY))"
+     @ontouchend="((e) => this.MouseUp(0, 0))">
+    <rect @ref="rectRef" width="40px" height="40px"></rect>
+</svg>
+
+@code {
+    private float lastx;
+    private float lasty;
+
+    private float movx;
+    private float movy;
+
+    private bool mouseDown;
+
+    private ElementReference rectRef;
+
+    private void MouseDown(float x, float y)
+    {
+        this.mouseDown = true;
+
+        this.lastx = x;
+        this.lasty = y;
+    }
+
+    private void MouseUp(float x, float y)
+    {
+        this.mouseDown = false;
+
+        this.lastx = x;
+        this.lasty = y;
+    }
+
+    private void MouseMove(float x, float y)
+    {
+        if (!this.mouseDown) return;
+
+        var devx = x - this.lastx;
+        var devy = y - this.lasty;
+
+        movx += devx;
+        movy += devy;
+
+        this.IJSRuntime.InvokeVoidAsync("translateGraphics", rectRef, movx, movy);
+
+        this.lastx = x;
+        this.lasty = y;
+    }
+}
