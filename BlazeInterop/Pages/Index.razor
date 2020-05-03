@@ -3,7 +3,7 @@
 
 <h1>Hello, world!</h1>
 
-<svg class="canvas"
+<div class="canvas"
      @onmousedown="((e) => this.MouseDown((float)e.ClientX, (float)e.ClientY))"
      @onmousemove="((e) => this.MouseMove((float)e.ClientX, (float)e.ClientY))"
      @onmouseup="((e) => this.MouseUp((float)e.ClientX, (float)e.ClientY))"
@@ -12,9 +12,13 @@
      @ontouchend="((e) => this.MouseUp(0, 0))"
      @ontouchstart:stopPropagation="true"
      @ontouchmove:stopPropagation="true">
+
     @*<rect @ref="rectRef" x="@this.ToCoordString(this.movx)" y="@this.ToCoordString(this.movy)" width="40px" height="40px"></rect>*@
-    <rect @ref="rectRef" width="40px" height="40px"></rect>
-</svg>
+
+    @*<div @ref="rectRef" width="40px" height="40px"></div>*@
+
+    <div @ref="rectRef" class="rect-div" style="@this.GetCssOffset()"></div>
+</div>
 
 @code {
     private float lastx;
@@ -26,6 +30,11 @@
     private bool mouseDown;
 
     private ElementReference rectRef;
+
+    private string GetCssOffset()
+    {
+        return $"left: {this.movx.ToString("0")}px; top: {this.movy.ToString("0")}px;";
+    }
 
     private string ToCoordString(float val)
     {
